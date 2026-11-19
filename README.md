@@ -5,12 +5,11 @@ Aplicação web acadêmica para gerenciamento de lojas. O sistema permite contro
 ## 1. Funcionalidades
 
 - Login com autenticação JWT e senhas protegidas com bcrypt.
-- Cadastro de usuário com criação automática da primeira loja.
 - Cadastro de novas lojas e alternância entre lojas pelo seletor lateral.
 - Separação de produtos, categorias, fornecedores, vendas e indicadores por loja.
 - Dashboard com quantidade de produtos, vendas, faturamento e estoque baixo.
 - Atualização manual dos indicadores pelo botão **Atualizar dados**.
-- CRUD de produtos: cadastrar, consultar, editar e desativar.
+- CRUD de produtos: cadastrar, consultar, editar e deletar (desativar).
 - Cadastro e consulta de categorias.
 - Cadastro e consulta de fornecedores.
 - Registro de vendas com validação de estoque e baixa automática em transação.
@@ -185,14 +184,6 @@ A seleção não é apenas visual: os dados de cada loja são separados no banco
 
 Na tela de fornecedores, o usuário informa um CEP e aciona **Buscar**. O frontend chama a rota `/api/cep/:cep` do backend. O backend consulta o ViaCEP e devolve os dados de endereço para preencher rua, bairro, cidade e estado.
 
-## 8. Deploy
-
-O projeto está preparado para uma publicação em serviços com planos gratuitos, sujeitos a limites e mudanças dos provedores:
-
-- Banco PostgreSQL: Neon — https://neon.tech/
-- Backend Node.js: Render — https://render.com/
-- Frontend React/Vite: Vercel — https://vercel.com/
-
 ### Backend no Render
 
 - Root Directory: `backend`
@@ -209,34 +200,7 @@ O projeto está preparado para uma publicação em serviços com planos gratuito
 
 Após publicar, atualize `FRONTEND_URL` no backend com a URL pública do frontend e teste login, CRUD, troca de loja e consulta ViaCEP. **O deploy ainda precisa ser realizado e os links públicos precisam ser adicionados aqui.**
 
-## 9. Checklist do trabalho solicitado pelo professor
-
-| Requisito do documento | Situação no código / entrega |
-|---|---|
-| Frontend com framework moderno | Atendido: React + Vite |
-| Backend com API REST | Atendido: Express |
-| CRUD (cadastro, consulta, alteração e exclusão) | Atendido para produtos; categorias e fornecedores possuem cadastro e consulta |
-| Banco de dados | Atendido: PostgreSQL com Prisma; pode usar Neon |
-| Requisições assíncronas frontend/backend | Atendido: Fetch API com async/await |
-| Autenticação de usuários | Atendido: login JWT e senha com bcrypt |
-| Integração com API/serviço externo | Atendido: ViaCEP |
-| Deploy gratuito de frontend e backend | Pendente: precisa publicar e testar |
-| Link do GitHub | Pendente: criar/publicar repositório e inserir link |
-| README com descrição, tecnologias e instruções | Atendido neste arquivo; preencher integrantes se houver dupla |
-| Apresentação de até 10 minutos | Roteiro sugerido abaixo |
-
-## 10. Roteiro sugerido para apresentação (10 minutos)
-
-1. **Objetivo e problema (1 min):** apresentar o Vértice Loja e a necessidade de organizar produtos, estoque e vendas.
-2. **Login (1 min):** demonstrar autenticação e explicar JWT e bcrypt.
-3. **Dashboard (1 min):** mostrar indicadores e botão de atualização.
-4. **Produtos (2 min):** cadastrar, consultar, editar e desativar um produto; explicar React, chamadas HTTP e rotas REST.
-5. **Vendas e estoque (1 min):** registrar uma venda e mostrar a baixa automática do estoque.
-6. **Troca de loja (1 min):** cadastrar uma segunda loja e alternar entre elas, mostrando a separação dos dados.
-7. **Banco e integração externa (1 min):** explicar PostgreSQL/Neon, Prisma e demonstrar a busca de CEP pelo ViaCEP.
-8. **Deploy e encerramento (2 min):** abrir as URLs publicadas e apresentar o repositório GitHub. Esta etapa só pode ser demonstrada depois de realizar o deploy.
-
-## 11. Observações importantes
+## 8. Observações importantes
 
 - A conta de demonstração usa uma senha simples e deve ser tratada apenas como dado acadêmico.
 - O cadastro público de usuários está habilitado para facilitar a demonstração; um sistema comercial real deve restringir esse fluxo e implementar perfis/permissões mais detalhados.
