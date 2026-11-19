@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+  sales        Sale[]
+  stores       Store[]
+}
+
+model Store {
+  id        Int        @id @default(autoincrement())
+  name      String
+  ownerId   Int
+  owner     User       @relation(fields: [ownerId], references: [id])
+  categories Category[]
+  products  Product[]
+  sales     Sale[]
+  suppliers Supplier[]
+  createdAt DateTime   @default(now())
+  @@index([ownerId])
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  storeId   Int
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  @@unique([name, storeId])
+  @@index([storeId])
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  sku         String?
+  price       Decimal   @db.Decimal(10, 2)
+  cost        Decimal?  @db.Decimal(10, 2)
+  stock       Int       @default(0)
+  minStock    Int       @default(5)
+  active      Boolean   @default(true)
+  categoryId  Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+  storeId     Int
+  store       Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  saleItems   SaleItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@unique([sku, storeId])
+  @@index([storeId])
+}
+
+model Sale {
+  id        Int        @id @default(autoincrement())
+  total     Decimal    @db.Decimal(10, 2)
+  customer  String?
+  status    String     @default("COMPLETED")
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  storeId   Int
+  store     Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  items     SaleItem[]
+  createdAt DateTime   @default(now())
+  @@index([storeId])
+}
+
+model SaleItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  saleId    Int
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String
+  document  String?
+  email     String?
+  phone     String?
+  cep       String?
+  street    String?
+  number    String?
+  district  String?
+  city      String?
+  state     String?
+  storeId   Int
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([storeId])
+}
