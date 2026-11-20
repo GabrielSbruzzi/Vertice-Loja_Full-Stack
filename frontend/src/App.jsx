@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 
-import { Activity, Boxes, ChartNoAxesCombined, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Package, Plus, Search, ShoppingBag, ShoppingCart, Users, X } from 'lucide-react';
+import { Activity, Boxes, ChartNoAxesCombined, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Menu, Package, Plus, Search, ShoppingBag, ShoppingCart, Users, X } from 'lucide-react';
 
 import { api } from './services/api';
 
@@ -216,6 +216,7 @@ function Layout({ children }) {
   const { user, logout, stores, activeStoreId, selectStore, createStore } = useAuth();
 
   const [menu, setMenu] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [storeModalOpen, setStoreModalOpen] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
   const [storeError, setStoreError] = useState('');
@@ -261,11 +262,23 @@ function Layout({ children }) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand">
-<span className="brand-mark">
-<ShoppingBag size={19} />
-</span> vértice<span className="brand-light">.</span>
-</div>
+        <div className="sidebar-header">
+          <div className="brand">
+            <span className="brand-mark">
+              <ShoppingBag size={19} />
+            </span>
+            vértice<span className="brand-light">.</span>
+          </div>
+          <button
+            className="mobile-menu-button"
+            type="button"
+            aria-label={mobileNavOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen(!mobileNavOpen)}
+          >
+            {mobileNavOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
         <div className="workspace workspace-select">
           <div className="workspace-icon">VL</div>
           <div className="workspace-details">
@@ -279,8 +292,20 @@ function Layout({ children }) {
           <ChevronDown size={15} />
         </div>
         <span className="nav-caption">MENU PRINCIPAL</span>
-        <nav>{nav.map((item) => <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-<item.icon size={18} />{item.label}</NavLink>)}</nav>
+        <nav className={mobileNavOpen ? 'mobile-nav-open' : ''}>
+          {nav.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              onClick={() => setMobileNavOpen(false)}
+              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+            >
+              <item.icon size={18} />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
         <div className="sidebar-bottom">
           <div className="help-card">
 <CircleHelp size={18} />
