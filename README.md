@@ -191,7 +191,7 @@ Na tela de fornecedores, o usuário informa um CEP e aciona **Buscar**. O fronte
 - Start Command: `npx prisma db push && npm start`
 - Variáveis: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` e `PORT` (a plataforma pode fornecer `PORT`).
 
-### Frontend na Vercel
+### Frontend na CloudFlare
 
 - Root Directory: `frontend`
 - Build Command: `npm run build`
@@ -203,6 +203,5 @@ Após publicar, atualize `FRONTEND_URL` no backend com a URL pública do fronten
 ## 8. Observações importantes
 
 - A conta de demonstração usa uma senha simples e deve ser tratada apenas como dado acadêmico.
-- O cadastro público de usuários está habilitado para facilitar a demonstração; um sistema comercial real deve restringir esse fluxo e implementar perfis/permissões mais detalhados.
 - O sistema atualiza os indicadores quando a página é carregada ou quando o usuário clica em **Atualizar dados**.
 - A pasta `legacy/` preserva um exemplo inicial de Repository/Service e não é utilizada pelo fluxo principal da aplicação.
