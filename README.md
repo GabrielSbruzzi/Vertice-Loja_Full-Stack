@@ -189,7 +189,7 @@ Na tela de fornecedores, o usuário informa um CEP e aciona **Buscar**. O fronte
 - Root Directory: `backend`
 - Build Command: `npm install && npx prisma generate`
 - Start Command: `npx prisma db push && npm start`
-- Variáveis: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` e `PORT` (a plataforma pode fornecer `PORT`).
+- Variáveis: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`
 
 ### Frontend na CloudFlare
 
