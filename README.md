@@ -19,26 +19,26 @@ Aplicação web acadêmica para gerenciamento de lojas. O sistema permite contro
 ## 2. Tecnologias utilizadas
 
 ### Frontend
-- React 18
-- Vite
-- React Router DOM
-- Lucide React (ícones)
-- CSS responsivo com fontes DM Sans e Manrope (Google Fonts)
-- Fetch API para requisições HTTP assíncronas
+- React 18 (biblioteca utilizada para criar as telas e a interface do sistema)
+- Vite (ferramenta que inicia e compila o frontend)
+- React Router DOM (gerencia a navegação entre as páginas)
+- Lucide React (biblioteca de ícones)
+- CSS responsivo com fontes DM Sans e Manrope (Google Fonts) (estilização e adaptação do sistema para diferentes telas)
+- Fetch API (realiza requisições para buscar e enviar dados ao backend)
 
 ### Backend
-- Node.js
-- Express
-- API REST
-- Zod para validação de dados
-- JSON Web Token (JWT) para autenticação
-- bcryptjs para hash de senhas
-- Helmet, CORS e express-rate-limit para proteções básicas
+- Node.js (executa o código JavaScript no servidor)
+- Express (facilita a criação do servidor e das rotas)
+- API REST (forma de comunicação entre frontend e backend)
+- Zod (valida os dados recebidos)
+- JSON Web Token (JWT) (identifica o usuário autenticado)
+- bcryptjs (protege as senhas usando criptografia em hash)
+- Helmet, CORS e express-rate-limit (ajudam na segurança e proteção das requisições)
 
 ### Banco de dados e ORM
-- PostgreSQL
-- Neon (PostgreSQL gerenciado na nuvem)
-- Prisma ORM
+- PostgreSQL (banco de dados que armazena as informações do sistema)
+- Neon (serviço de banco de dados PostgreSQL hospedado na nuvem)
+- Prisma ORM (facilita a comunicação entre o código e o banco de dados)
 
 ### Integração externa
 - ViaCEP: https://viacep.com.br/ — consulta de endereço a partir do CEP.
