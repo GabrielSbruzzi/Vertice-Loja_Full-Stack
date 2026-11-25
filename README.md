@@ -205,3 +205,20 @@ Após publicar, atualize `FRONTEND_URL` no backend com a URL pública do fronten
 - A conta de demonstração usa uma senha simples e deve ser tratada apenas como dado acadêmico.
 - O sistema atualiza os indicadores quando a página é carregada ou quando o usuário clica em **Atualizar dados**.
 - A pasta `legacy/` preserva um exemplo inicial de Repository/Service e não é utilizada pelo fluxo principal da aplicação.
+
+## 9. Arquivos importantes e o que comprovam
+
+| Arquivo | O que comprova |
+|---|---|
+| `frontend/src/App.jsx` | Telas e fluxo principal da interface React. |
+| `frontend/src/services/api.js` | Requisições assíncronas e envio de token/cabeçalho da loja. |
+| `backend/src/server.js` | Inicialização do servidor Express. |
+| `backend/src/routes/index.js` | Definição das rotas da API REST. |
+| `backend/src/controllers/productController.js` | Recebimento e tratamento das operações de produto. |
+| `backend/src/services/productService.js` | Regras de negócio dos produtos. |
+| `backend/src/repositories/productRepository.js` | Acesso aos dados usando Prisma. |
+| `backend/src/services/authService.js` | Login, bcrypt e emissão de JWT. |
+| `backend/src/middleware/auth.js` | Validação do token JWT. |
+| `backend/src/middleware/storeContext.js` | Validação da loja selecionada para o usuário. |
+| `backend/prisma/schema.prisma` | Modelos, tabelas e relacionamentos do PostgreSQL. |
+| `README.md` | Descrição, tecnologias, instruções, endpoints e situação do deploy. |
