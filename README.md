@@ -97,8 +97,6 @@ PORT=3001
 FRONTEND_URL="http://localhost:5173"
 ```
 
-Mantenha o `.env` fora do GitHub. Nunca publique senhas ou tokens.
-
 ### 4.2 Instalar e iniciar o backend
 
 ```bash
