@@ -1,3 +1,4 @@
+
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 const { requireStore } = require('../middleware/storeContext');
@@ -13,15 +14,20 @@ router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 
 router.use(auth.authenticate);
+
 router.get('/stores', store.listStores);
 router.post('/stores', store.createStore);
+router.put('/stores/:id', store.updateStore);
+router.delete('/stores/:id', store.deleteStore);
 
 router.use(requireStore);
+
 router.get('/products', product.list);
 router.get('/products/:id', product.get);
 router.post('/products', product.create);
 router.put('/products/:id', product.update);
 router.delete('/products/:id', product.remove);
+
 router.get('/categories', store.categories);
 router.post('/categories', store.createCategory);
 router.get('/dashboard', store.dashboard);

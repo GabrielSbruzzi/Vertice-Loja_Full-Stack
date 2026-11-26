@@ -99,13 +99,26 @@ function AuthProvider({ children }) {
 
   }
 
+  async function updateStore(id, name) {
+    const updated = await api(`/stores/${id}`, { method: 'PUT', body: JSON.stringify({ name }) });
+    setStores(current => current.map(store => String(store.id) === String(id) ? updated : store));
+    return updated;
+  }
+
+  async function deleteStore(id) {
+    await api(`/stores/${id}`, { method: 'DELETE' });
+    const updatedStores = stores.filter(store => String(store.id) !== String(id));
+    setStores(updatedStores);
+    if (String(activeStoreId) === String(id)) {
+      if (updatedStores.length) selectStore(updatedStores[0].id);
+      else { localStorage.removeItem('loja_store_id'); setActiveStoreId(''); window.location.reload(); }
+    }
+  }
+
   function selectStore(id) {
     localStorage.setItem('loja_store_id', String(id));
-
     setActiveStoreId(String(id));
-
     window.location.reload();
-
   }
 
   useEffect(() => {
@@ -117,7 +130,7 @@ function AuthProvider({ children }) {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, stores, storesLoaded, activeStoreId, selectStore, createStore }}>
+    <AuthContext.Provider value={{ user, login, logout, stores, storesLoaded, activeStoreId, selectStore, createStore, updateStore, deleteStore }}>
       {children}
     </AuthContext.Provider>
   );
@@ -213,11 +226,13 @@ const nav = [
 ];
 
 function Layout({ children }) {
-  const { user, logout, stores, activeStoreId, selectStore, createStore } = useAuth();
+  const { user, logout, stores, activeStoreId, selectStore, createStore, updateStore, deleteStore } = useAuth();
 
   const [menu, setMenu] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [storeModalOpen, setStoreModalOpen] = useState(false);
+  const [storeModalMode, setStoreModalMode] = useState('create');
+  const [deleteStoreModalOpen, setDeleteStoreModalOpen] = useState(false);
   const [newStoreName, setNewStoreName] = useState('');
   const [storeError, setStoreError] = useState('');
   const [storeSaving, setStoreSaving] = useState(false);
@@ -229,6 +244,7 @@ function Layout({ children }) {
     const value = event.target.value;
 
     if (value === 'new') {
+      setStoreModalMode('create');
       setNewStoreName('');
       setStoreError('');
       setStoreModalOpen(true);
@@ -239,25 +255,40 @@ function Layout({ children }) {
 
   }
 
-  async function submitNewStore(event) {
+  function openEditStore() {
+    if (!activeStore) return;
+    setStoreModalMode('edit');
+    setNewStoreName(activeStore.name || '');
+    setStoreError('');
+    setStoreModalOpen(true);
+  }
+
+
+  async function submitStore(event) {
     event.preventDefault();
     const name = newStoreName.trim();
-    if (name.length < 2) {
-      setStoreError('Informe um nome com pelo menos 2 caracteres.');
-      return;
-    }
+    if (name.length < 2) { setStoreError('Informe um nome com pelo menos 2 caracteres.'); return; }
     setStoreSaving(true);
     setStoreError('');
     try {
-      await createStore(name);
-      setStoreModalOpen(false);
+      if (storeModalMode === 'edit') { await updateStore(activeStore.id, name); setStoreModalOpen(false); }
+      else await createStore(name);
       setNewStoreName('');
     } catch (error) {
-      setStoreError(error.message || 'Não foi possível criar a loja.');
-    } finally {
-      setStoreSaving(false);
-    }
+      setStoreError(error.message || 'Não foi possível salvar a loja.');
+    } finally { setStoreSaving(false); }
   }
+
+
+  async function confirmDeleteStore() {
+    if (!activeStore) return;
+    setStoreSaving(true);
+    setStoreError('');
+    try { await deleteStore(activeStore.id); setDeleteStoreModalOpen(false); }
+    catch (error) { setStoreError(error.message || 'Não foi possível excluir a loja.'); }
+    finally { setStoreSaving(false); }
+  }
+
 
   return (
     <div className="app-shell">
@@ -290,6 +321,10 @@ function Layout({ children }) {
             <option value="new">+ Adicionar loja</option>
           </select>
           <ChevronDown size={15} />
+        </div>
+        <div className="store-management">
+          <button type="button" className="store-management-button" onClick={openEditStore} disabled={!activeStore}>Editar loja</button>
+          <button type="button" className="store-management-button store-delete-button" onClick={() => { setStoreError(''); setDeleteStoreModalOpen(true); }} disabled={stores.length <= 1 || !activeStore}>Excluir loja</button>
         </div>
         <span className="nav-caption">MENU PRINCIPAL</span>
         <nav className={mobileNavOpen ? 'mobile-nav-open' : ''}>
@@ -344,24 +379,34 @@ function Layout({ children }) {
       </main>
       {storeModalOpen && (
         <div className="modal-backdrop app-dialog-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setStoreModalOpen(false)}>
-          <form className="modal app-dialog" onSubmit={submitNewStore}>
+          <form className="modal app-dialog" onSubmit={submitStore}>
             <div className="modal-head">
               <div>
                 <span className="eyebrow">CONFIGURAÇÕES</span>
-                <h2>Adicionar loja</h2>
+                <h2>{storeModalMode === 'edit' ? 'Editar loja' : 'Adicionar loja'}</h2>
               </div>
               <button type="button" className="icon-button" aria-label="Fechar" onClick={() => setStoreModalOpen(false)}><X /></button>
             </div>
-            <p className="dialog-description">Dê um nome para a nova loja. Você poderá alternar entre suas lojas pelo menu lateral.</p>
+            <p className="dialog-description">{storeModalMode === 'edit' ? 'Altere o nome da loja.' : 'Dê um nome para a nova loja. Você poderá alternar entre suas lojas pelo menu lateral.'}</p>
             <label className="dialog-field">Nome da loja
               <input autoFocus value={newStoreName} onChange={(event) => setNewStoreName(event.target.value)} placeholder="Ex.: Vértice Centro" maxLength={60} />
             </label>
             {storeError && <div className="alert dialog-error" role="alert">{storeError}</div>}
             <div className="modal-actions">
               <button type="button" className="btn secondary" onClick={() => setStoreModalOpen(false)}>Cancelar</button>
-              <button className="btn primary" disabled={storeSaving}>{storeSaving ? 'Criando...' : 'Criar loja'}</button>
+              <button className="btn primary" disabled={storeSaving}>{storeSaving ? (storeModalMode === 'edit' ? 'Salvando...' : 'Criando...') : (storeModalMode === 'edit' ? 'Salvar alterações' : 'Criar loja')}</button>
             </div>
           </form>
+        </div>
+      )}
+      {deleteStoreModalOpen && activeStore && (
+        <div className="modal-backdrop app-dialog-backdrop" onMouseDown={event => event.target === event.currentTarget && setDeleteStoreModalOpen(false)}>
+          <div className="modal app-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-store-title">
+            <div className="modal-head"><div><span className="eyebrow">CONFIRMAR AÇÃO</span><h2 id="delete-store-title">Excluir loja?</h2></div><button type="button" className="icon-button" aria-label="Fechar" onClick={() => setDeleteStoreModalOpen(false)}><X /></button></div>
+            <p className="dialog-description">Deseja excluir a loja <strong>{activeStore.name}</strong>? Só será possível excluir lojas sem produtos, categorias, vendas ou fornecedores cadastrados.</p>
+            {storeError && <div className="alert dialog-error" role="alert">{storeError}</div>}
+            <div className="modal-actions"><button type="button" className="btn secondary" onClick={() => setDeleteStoreModalOpen(false)}>Cancelar</button><button type="button" className="btn danger" disabled={storeSaving} onClick={confirmDeleteStore}>{storeSaving ? 'Excluindo...' : 'Excluir loja'}</button></div>
+          </div>
         </div>
       )}
     </div>
