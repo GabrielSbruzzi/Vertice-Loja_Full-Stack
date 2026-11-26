@@ -85,7 +85,7 @@ LojaFullStack/
 
 1. Crie uma conta em https://neon.tech/ e crie um projeto PostgreSQL.
 2. No painel do projeto, copie a connection string.
-3. No backend, crie o arquivo `.env` a partir do `.env.example`.
+3. No backend, crie o arquivo `.env`.
 4. Substitua `DATABASE_URL` pela connection string do Neon e defina um `JWT_SECRET` forte.
 
 Exemplo de `.env` do backend:
